@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from flask import Flask, jsonify, request, json
@@ -47,11 +48,6 @@ def student():
                 return jsonify({'error': f'{field} is required'}),500
        
 #set up variables for json info
-        SID = request.args.get('ID')
-        SP = request.args.get('phone')
-        getNumber = f"SELECT * FROM STUDENT where ID = {SID}"
-        changeNumber = f"UPDATE STUDENT SET phone = {SP} WHERE phone = data['phone']"
-
         pID = data.get("ID")
         pname = data.get('name')
         pemail = data.get('email')
@@ -64,17 +60,6 @@ def student():
         try:
             conn = sqlite3.connect(dbStudent)
             c = conn.cursor()
-            if SID and SP is not None:
-                c.row_factory = sqlite3.Row
-                rows = c.fetchall()
-                c.execute(getNumber)
-                for row in rows:
-                    print(row['phone'])
-                c.execute(changeNumber)
-                for row in rows:
-                    print(row['phone'])
-                conn.commit()
-                return jsonify({f"New Number for Student {SID}":SP})
             c.execute(createStudent)
             q = "INSERT INTO STUDENT(id,name,email,phone,year,status) VALUES('{i}','{n}','{e}','{p}','{y}','{s}')".format(i=pID,n=pname,e=pemail,p=pphone,y=pyear,s=pstatus)
             c.execute(q)
@@ -147,9 +132,37 @@ def student():
             print("broken",e)
             
 
-
-
-
+@app.route('/student/phone', methods=['POST'])
+def student_phone():
+    
+    SID = request.args.get('ID')
+    SP = request.args.get('phone')
+    getNumber = f"SELECT * FROM STUDENT where ID = {SID}"
+    changeNumber = f"UPDATE STUDENT SET phone = {SP} WHERE phone = data['phone']"
+    
+    if SID == None:
+        return jsonify({"error":"Please enter querey parameter for student ID to continue"})
+    
+    if SP == None:
+        return jsonify({"error":"Please enter querey parameter for student phone to continue"})
+        
+        try:
+            conn = sqlite3.connect(dbStudent)
+            c = conn.curson()
+            c.row_factory = sqlite3.Row
+            rows = c.fetchall()
+            c.execute(getNumber)
+            for row in rows:
+                print(row['phone'])
+            c.execute(changeNumber)
+            for row in rows:
+                print(row['phone'])
+            conn.commit()
+            return jsonify({f"New Number for Student {SID}":SP})
+        except Exception as e:
+            print(e)
+            return 'xoxo gossip girl'
+            
 # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -278,7 +291,36 @@ def teacherid(ID):
     except Exception as e:
         print("broken",e)
 
+@app.route('/teacher/phone', methods=['POST'])
+def teacher_phone():
+    
+    DID = request.args.get('ID')
+    DP = request.args.get('phone')
+    getNumber = f"SELECT * FROM teacher where ID = {DID}"
+    changeNumber = f"UPDATE teacher SET phone = {DP} WHERE phone = data['phone']"
+    
+    if DID == None:
+        return jsonify({"error":"Please enter querey parameter for teacher ID to continue"})
+    
+    if DP == None:
+        return jsonify({"error":"Please enter querey parameter for teacher phone to continue"})
         
+        try:
+            conn = sqlite3.connect(dbTeacher)
+            c = conn.curson()
+            c.row_factory = sqlite3.Row
+            rows = c.fetchall()
+            c.execute(getNumber)
+            for row in rows:
+                print(row['phone'])
+            c.execute(changeNumber)
+            for row in rows:
+                print(row['phone'])
+            conn.commit()
+            return jsonify({f"New Number for teacher {DID}":DP})
+        except Exception as e:
+            print(e)
+            return 'xoxo gossip girl'        
     
                 
           
